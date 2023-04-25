@@ -1,5 +1,5 @@
 export default function Home() {
   return (
-    <div>Hello Auction Hive</div>
+    <div className="text-rose-400 text-2xl">Hello Auction Hive</div>
   )
 }
