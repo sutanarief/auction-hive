@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useCallback } from 'react';
+import { signIn } from 'next-auth/react'
 import axios from 'axios';
 import { AiFillGithub } from 'react-icons/ai';
 import { FcGoogle } from 'react-icons/fc'
@@ -17,9 +18,11 @@ import Input from '../inputs/Input';
 import { toast } from 'react-hot-toast';
 import Button from '../Button';
 import useLoginModal from '@/app/hooks/useLoginModal';
+import { useRouter } from 'next/navigation';
 
 
-const RegisterModal = () => {
+const LoginModal = () => {
+  const router = useRouter()
   const registerModal = useRegisterModal();
   const loginModal = useLoginModal()
   const [isLoading, setIsLoading] = useState(false)
@@ -33,7 +36,6 @@ const RegisterModal = () => {
     }
   } = useForm<FieldValues>({
     defaultValues: {
-      name: '',
       email: '',
       password: ''
     }
@@ -41,49 +43,39 @@ const RegisterModal = () => {
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     setIsLoading(true)
-
-    axios.post('/api/register', data)
-    .then(() => {
-      registerModal.onClose()
-      toast.success("Welcome aboard! Your account has been successfully created. Enjoy your stay and make the most of our platform's features. Cheers!", {
-        duration: 10000,
-      })
+    signIn('credentials', {
+      ...data,
+      redirect: false
     })
-    .catch((error) => {
-      toast.error('Something went wrong.')
-    })
-    .finally(() => {
+    .then((callback) => {
       setIsLoading(false)
-    })
 
-    setTimeout(() => {
-      loginModal.onOpen()
-    }, 2000)
+      if (callback?.ok) {
+        toast.success('Logged in')
+        router.refresh()
+        loginModal.onClose()
+      }
+
+      if (callback?.error) {
+        toast.error(callback.error)
+      }
+    })
   }
 
-  const onClickLogin = useCallback(() => {
-    registerModal.onClose()
-    loginModal.onOpen()
+  const onClickRegister = useCallback(() => {
+    loginModal.onClose()
+    registerModal.onOpen()
   }, [loginModal, registerModal])
 
   const bodyContent = (
     <div className='flex flex-col gap-4'>
       <Heading
-        title='Welcome to AuctionHive'
-        subTitle='Create an account!'
+        title='Welcome Back Bidders'
+        subTitle='Login to your account!'
       />
       <Input
         id='email'
         label='Email'
-        disabled={isLoading}
-        register={register}
-        errors={errors}
-        watch={watch}
-        required
-      />
-      <Input
-        id='name'
-        label='Name'
         disabled={isLoading}
         register={register}
         errors={errors}
@@ -100,12 +92,44 @@ const RegisterModal = () => {
         watch={watch}
         required
       />
+      <div
+        className='
+          -mb-5
+          cursor-pointer
+          hover:underline
+          font-medium
+          text-blue-800
+          self-end
+        '
+      >Forgot password ?</div>
     </div>
   )
 
   const footerContent = (
     <div className='flex flex-col gap-4 mt-3'>
-      <hr/>
+      <div
+        className='flex gap-4 items-center'
+      >
+        <div className='
+          h-[1px]
+          bg-neutral-500
+          w-full
+        '
+        ></div>
+        <div
+          className='
+          font-semibold
+          h-fit
+          text-neutral-500
+          '
+        >OR</div>
+        <div className='
+          h-[1px]
+          bg-neutral-500
+          w-full
+        '
+        ></div>
+      </div>
       <Button 
         outline
         label='Continue with Google'
@@ -128,7 +152,7 @@ const RegisterModal = () => {
       >
         <div className='flex flex-row items-center gap-2 justify-center'>
           <div>
-            Already have an account ?
+            Creat an account ?
           </div>
           <div
             className='
@@ -137,9 +161,10 @@ const RegisterModal = () => {
               font-medium
               text-blue-800
             '
-            onClick={onClickLogin}
+
+            onClick={onClickRegister}
           >
-            Login
+            Register
           </div>
         </div>
       </div>
@@ -149,14 +174,14 @@ const RegisterModal = () => {
   return (
     <Modal
       disabled={isLoading}
-      isOpen={registerModal.isOpen}
-      title='Register'
-      actionLabel='Continue'
-      onClose={registerModal.onClose}
+      isOpen={loginModal.isOpen}
+      title='Login'
+      actionLabel='Login'
+      onClose={loginModal.onClose}
       onSubmit={handleSubmit(onSubmit)}
       body={bodyContent}
       footer={footerContent}
     />
   )
 }
-export default RegisterModal;
+export default LoginModal;

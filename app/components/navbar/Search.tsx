@@ -13,7 +13,8 @@ const Search:React.FC<SearchProps> = () => {
       className='
         border-[1px]
         w-full
-        md:w-5/12
+        sm:w-full
+        lg:w-5/12
         py-2
         rounded-full
         shadow-sm

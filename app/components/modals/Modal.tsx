@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, KeyboardEvent } from 'react';
 import { IoMdClose } from 'react-icons/io'
 import Button from '../Button';
 
@@ -34,7 +34,7 @@ const Modal:React.FC<ModalProps> = ({
   useEffect(() => {
     setShowModal(isOpen)
   }, [isOpen])
-
+  
   const handleClose = useCallback(() => {
     if (disabled) {
       return
@@ -45,6 +45,21 @@ const Modal:React.FC<ModalProps> = ({
       onClose()
     }, 300)
   }, [disabled, onClose])
+  
+  useEffect(() => {
+    const handleEscClose = (event: Event): void => {
+      if ((event as unknown as KeyboardEvent).key === 'Escape') {
+        setShowModal(false)
+        setTimeout(() => {
+          onClose()
+        }, 300)
+      }
+    };
+    document.addEventListener('keydown', handleEscClose);
+    return () => {
+      document.removeEventListener('keydown', handleEscClose);
+    };
+  }, [onClose]);
 
   const handleSubmit = useCallback(() => {
     if (disabled) {
@@ -69,11 +84,12 @@ const Modal:React.FC<ModalProps> = ({
   return (
     <>
       <div
+        onKeyDown={handleKeyDown}
         className='
           justify-center
           items-center
           flex
-          overflow-x-hidden
+          overflow-x-auto
           overflow-y-auto
           fixed
           inset-0
@@ -87,14 +103,12 @@ const Modal:React.FC<ModalProps> = ({
           className='
             relative
             w-full
-            md:w-4/6
-            lg:w-3/6
-            xl:w-2/5
+            lg:w-2/5
             my-6
             mx-auto
-            h-full
-            lg:h-auto
-            md:h-auto
+            scale-75
+            2xl:scale-100
+            sm:h-auto
           '
         >
           {/* CONTENT */}
@@ -137,22 +151,22 @@ const Modal:React.FC<ModalProps> = ({
                   border-b-[1px]
                 '
               >
+                <div className='text-lg font-semibold'>
+                  {title}
+                </div>
                 <button
                   onClick={handleClose}
                   className='
                     p-1
                     border-0
-                    hover:opacity-0
+                    hover:opacity-50
                     transition
                     absolute
-                    left-9
+                    right-9
                   '
                 >
                   <IoMdClose size={18}  />
                 </button>
-                <div className='text-lg font-semibold'>
-                  {title}
-                </div>
               </div>
               {/* BODY */}
               <div className='relative p-6 flex-auto'>

@@ -12,7 +12,7 @@ const Logo = () => {
     >
       <Image 
         alt="logo"
-        className="hidden md:block"
+        className="hidden sm:hidden md:hidden lg:block"
         width="50"
         height="50"
         src="/hive.svg"
@@ -21,6 +21,8 @@ const Logo = () => {
         className="
           text-3xl
           self-center
+          hidden
+          md:block
         "
       >
         Auction<span className="text-yellow-400 font-extrabold">Hive</span>
