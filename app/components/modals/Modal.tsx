@@ -84,7 +84,6 @@ const Modal:React.FC<ModalProps> = ({
   return (
     <>
       <div
-        onKeyDown={handleKeyDown}
         className='
           justify-center
           items-center
