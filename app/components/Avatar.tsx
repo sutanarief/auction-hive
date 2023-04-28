@@ -4,10 +4,10 @@ import Image from 'next/image';
 import React from 'react';
 
 type AvatarProps = {
-  
+  src?: string | null | undefined
 };
 
-const Avatar:React.FC<AvatarProps> = () => {
+const Avatar:React.FC<AvatarProps> = ({ src }) => {
   
   return (
     <Image 
@@ -15,7 +15,7 @@ const Avatar:React.FC<AvatarProps> = () => {
       width='30'
       height='30'
       alt='Avatar'
-      src='/images/ps5.jpg'
+      src={src || `/images/ps5.jpg`}
     />
   )
 }

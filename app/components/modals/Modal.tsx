@@ -3,6 +3,7 @@
 import React, { useCallback, useEffect, useState, KeyboardEvent } from 'react';
 import { IoMdClose } from 'react-icons/io'
 import Button from '../Button';
+import { FieldValues, UseFormReset } from 'react-hook-form';
 
 type ModalProps = {
   isOpen?: boolean
@@ -15,6 +16,8 @@ type ModalProps = {
   disabled?: boolean
   secondaryAction?: () => void
   secondaryActionLabel?: string
+  // isSuccess: boolean
+  // reset: UseFormReset<FieldValues>
 };
 
 const Modal:React.FC<ModalProps> = ({
@@ -61,13 +64,20 @@ const Modal:React.FC<ModalProps> = ({
     };
   }, [onClose]);
 
+  
   const handleSubmit = useCallback(() => {
     if (disabled) {
       return
     }
-
+    
     onSubmit()
   }, [disabled, onSubmit])
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if(e.code === 'Enter') {
+      handleSubmit()
+    }
+  }
 
   const handleSecondaryAction = useCallback(() => {
     if (disabled || !secondaryAction) {
@@ -84,6 +94,7 @@ const Modal:React.FC<ModalProps> = ({
   return (
     <>
       <div
+        onKeyDown={handleKeyDown}
         className='
           justify-center
           items-center
