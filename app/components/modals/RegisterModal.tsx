@@ -38,7 +38,8 @@ const RegisterModal = () => {
     defaultValues: {
       name: '',
       email: '',
-      password: ''
+      password: '',
+      username: ''
     }
   })
 
@@ -74,7 +75,16 @@ const RegisterModal = () => {
       className='flex flex-col gap-4'>
       <Heading
         title='Welcome to AuctionHive'
-        subTitle='Create an account!'
+        subtitle='Create an account!'
+      />
+      <Input
+        id='username'
+        label='Username'
+        disabled={isLoading}
+        register={register}
+        errors={errors}
+        watch={watch}
+        required
       />
       <Input
         id='email'

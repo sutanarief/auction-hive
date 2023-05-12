@@ -10,7 +10,8 @@ export async function POST(
   const {
     email,
     name,
-    password
+    password,
+    username
   } = body
 
   const hashedPassword = await bcrypt.hash(password, 12)
@@ -20,8 +21,10 @@ export async function POST(
       email,
       name,
       hashedPassword,
+      username
     }
   })
+
 
   return NextResponse.json(user)
 }

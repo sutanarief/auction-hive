@@ -116,7 +116,7 @@ const Modal:React.FC<ModalProps> = ({
             lg:w-2/5
             my-6
             mx-auto
-            scale-75
+            scale-100
             2xl:scale-100
             sm:h-auto
           '
@@ -135,6 +135,7 @@ const Modal:React.FC<ModalProps> = ({
               className='
                 translate
                 h-full
+                mt-5
                 lg:h-auto
                 md:h-auto
                 border-0

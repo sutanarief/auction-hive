@@ -21,17 +21,19 @@ export const authOptions : AuthOptions = {
     CredentialsProvider({
       name: 'credentials',
       credentials: {
-        email: { label: 'email', type: 'text'},
+        email_username: { label: 'email_username', type: 'text'},
         password: { label: 'password', type: 'password'}
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
+        if (!credentials?.email_username || !credentials?.password) {
           throw new Error('Invalid credentials')
         }
 
+        const regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
         const user = await prisma.user.findUnique({
           where: {
-            email: credentials.email
+            ...(regex.test(credentials.email_username) ? {email: credentials.email_username} : {username: credentials.email_username})
           }
         })
 

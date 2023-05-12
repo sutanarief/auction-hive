@@ -11,13 +11,14 @@ import {
   useForm
 } from 'react-hook-form'
 
-import useRegisterModal from '@/app/hooks/useRegisterModal';
 import Modal from './Modal';
+import useRegisterModal from '@/app/hooks/useRegisterModal';
+import useLoginModal from '@/app/hooks/useLoginModal';
+
 import Heading from '../Heading';
 import Input from '../inputs/Input';
-import { toast } from 'react-hot-toast';
 import Button from '../Button';
-import useLoginModal from '@/app/hooks/useLoginModal';
+import { toast } from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 
 
@@ -36,8 +37,8 @@ const LoginModal = () => {
     }
   } = useForm<FieldValues>({
     defaultValues: {
-      email: '',
-      password: ''
+      email_username: '',
+      password: '',
     }
   })
 
@@ -71,11 +72,11 @@ const LoginModal = () => {
     <div className='flex flex-col gap-4'>
       <Heading
         title='Welcome Back Bidders'
-        subTitle='Login to your account!'
+        subtitle='Login to your account!'
       />
       <Input
-        id='email'
-        label='Email'
+        id='email_username'
+        label='Email/Username'
         disabled={isLoading}
         register={register}
         errors={errors}
@@ -152,7 +153,7 @@ const LoginModal = () => {
       >
         <div className='flex flex-row items-center gap-2 justify-center'>
           <div>
-            Creat an account ?
+            First time in AuctionHive ?
           </div>
           <div
             className='
@@ -164,7 +165,7 @@ const LoginModal = () => {
 
             onClick={onClickRegister}
           >
-            Register
+            Create an account
           </div>
         </div>
       </div>

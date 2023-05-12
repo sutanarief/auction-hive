@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { AiOutlineMenu } from 'react-icons/ai'
 import { MdOutlineHive } from 'react-icons/md'
 import Avatar from '../Avatar';
@@ -10,15 +10,20 @@ import useLoginModal from '@/app/hooks/useLoginModal';
 import { signOut } from 'next-auth/react';
 import Button from '../Button';
 import { SafeUser } from '@/app/types';
+import { useRouter } from 'next/navigation';
+import useIsClickOut from '@/app/hooks/useClickOutside';
 
 type UserMenuProps = {
   currentUser?: SafeUser | null
 };
 
 const UserMenu:React.FC<UserMenuProps> = ({ currentUser }) => {
+  const router = useRouter()
   const registerModal = useRegisterModal()
   const loginModal = useLoginModal()
   const [isOpen, setIsOpen] = useState(false)
+  const dropdownRef = useRef(null)
+  const [elementCallback] = useIsClickOut(setIsOpen)
 
   const toggleOpen = useCallback(() => {
     setIsOpen((value) => !value)
@@ -29,7 +34,7 @@ const UserMenu:React.FC<UserMenuProps> = ({ currentUser }) => {
       <div className='flex flex-row items-center gap-3'>
         {currentUser ? (
           <div
-            onClick={() => {}}
+            onClick={() => router.push('/balance')}
             className='
               block
               text-sm
@@ -44,7 +49,7 @@ const UserMenu:React.FC<UserMenuProps> = ({ currentUser }) => {
           >
             <div className='flex flex-row items-start'>
               <MdOutlineHive size={18}/>
-              <span className='text-center self-center'>100.000.000</span>
+              <span className='text-center self-center'>{currentUser.balance || 0}</span>
             </div>
           </div>
         ) : (
@@ -89,6 +94,7 @@ const UserMenu:React.FC<UserMenuProps> = ({ currentUser }) => {
       </div>
       {isOpen && (
         <div
+          ref={elementCallback}
           className={`
             absolute
             rounded-xl
@@ -106,11 +112,11 @@ const UserMenu:React.FC<UserMenuProps> = ({ currentUser }) => {
           <div className='flex flex-col cursor-pointer'>
             {currentUser ? (
               <>
-                <MenuItem onClick={() => {}} label='Profile'/>
-                <MenuItem onClick={() => {}} label='Balance'/>
-                <MenuItem onClick={() => {}} label='My Items'/>
-                <MenuItem onClick={() => {}} label='My Bids'/>
-                <MenuItem onClick={() => {}} label='Cart'/>
+                {/* <MenuItem onClick={() => router.push('/profile')} label='Profile'/> */}
+                <MenuItem onClick={() => router.push('/balance')} label='Balance'/>
+                <MenuItem onClick={() => router.push('/items/myitems')} label='My Items'/>
+                <MenuItem onClick={() => router.push('/auctions')} label='Joined Auction'/>
+                {/* <MenuItem onClick={() => router.push('/cart')} label='Cart'/> */}
                 <hr/>
                 <MenuItem onClick={() => signOut()} label='Logout'/>
               </>

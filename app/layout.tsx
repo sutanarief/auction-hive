@@ -1,11 +1,15 @@
 import { Nunito } from 'next/font/google'
 import './globals.css'
 import Navbar from './components/navbar/Navbar'
-import Modal from './components/modals/Modal'
-import RegisterModal from './components/modals/RegisterModal'
-import LoginModal from './components/modals/LoginModal'
 import ToasterProvider from './providers/ToasterProvider'
 import getCurrentUser from './actions/getCurrentUser'
+
+import RegisterModal from './components/modals/RegisterModal'
+import LoginModal from './components/modals/LoginModal'
+import ItemModal from './components/modals/ItemModal'
+import ClientOnly from './components/ClientOnly'
+import BidInfoModal from './components/modals/BidInfoModal'
+import BidModal from './components/modals/BidModal'
 
 
 const font = Nunito({
@@ -28,11 +32,18 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={font.className}>
-        <ToasterProvider />
-        <LoginModal />
-        <RegisterModal />
-        <Navbar currentUser={currentUser} />
-        {children}
+        <ClientOnly>
+          <ToasterProvider />
+          <LoginModal />
+          <RegisterModal />
+          <BidInfoModal />
+          <BidModal currentUser={currentUser} />
+          <ItemModal currentUser={currentUser} />
+          <Navbar currentUser={currentUser} />
+          <div className='pb-20 pt-28'>
+            {children}
+          </div>
+        </ClientOnly>
         </body>
     </html>
   )
