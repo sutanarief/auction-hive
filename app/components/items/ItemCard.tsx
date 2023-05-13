@@ -8,12 +8,19 @@ import EyeButton from "../EyeButton";
 import Countdown from 'react-countdown';
 import { MdOutlineHive } from "react-icons/md";
 import Button from "../Button";
-import { BsCircleFill } from "react-icons/bs";
+import { BsFillPersonFill } from "react-icons/bs";
+import { FaFlagCheckered } from "react-icons/fa";
 import Timer from "../Timer";
+import useLoginModal from "@/app/hooks/useLoginModal";
+import Avatar from "../Avatar";
 
 
 type ItemCardProps = {
-  data: SafeItem;
+  data: SafeItem & {
+    winner?: {
+      username: string | null
+    }
+  }
   onAction?: (id: string) => void;
   disabled?: boolean;
   actionLabel?: string;
@@ -30,44 +37,7 @@ const ItemCard:React.FC<ItemCardProps> = ({
   currentUser
 }) => {
   const router = useRouter()
-
-  const formatDate = (date: string, time: string) => {
-    const monthsArr = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-    let newDate = new Date(date)
-    const offset = (newDate.getTimezoneOffset() + (7 * 60)) * 60000
-    newDate.setTime(newDate.getTime() + offset)
-
-    const day = newDate.getDate()
-    const year = newDate.getFullYear()
-    const month = newDate.getMonth()
-    return time === 'start' ? `${monthsArr[month]} ${day}, ${year} at 10AM` : ``
-  }
-
-  const renderer = ({ days, hours, minutes, seconds, completed }:any ) => {
-    const timeChecker = (value: any) => {
-      return value < 10 ? `0${value}`: value
-    }
-
-    if (completed) {
-      return null
-    } else {
-      return <span>{data.isActive ? 'Ends in - ': 'Starts in -'} {timeChecker(days)}:{timeChecker(hours)}:{timeChecker(minutes)}:{timeChecker(seconds)}</span>
-    }
-  }
-
-  const addDate = (date: string, type: string) => {
-    let result = new Date(date)
-
-    if (type === 'start') {
-      result.setHours(result.getHours() + 14)
-    } else {
-      result.setHours(result.getHours() - 14)
-    }
-
-    return result
-  }
-
-  console.log(data, 'ini data ni')
+  const loginModal = useLoginModal()
 
   return (
     <div
@@ -106,9 +76,14 @@ const ItemCard:React.FC<ItemCardProps> = ({
               currentUser={currentUser}
             />
           </div>
-        </div>
-        <div className="font-semibold text-lg flex-row flex items-center">
-          {data.title} <BsCircleFill fill={data.isActive ? "green" : "red"} size={12} className="ml-1"/> 
+          {!data.winnerId && (
+            <div className="absolute top-3 left-3 flex flex-row">
+              <div className={`p-1 text-xs text-white ${data.isActive ? "bg-green-500" : "bg-red-500"} rounded-l-lg`}>
+                <BsFillPersonFill />
+              </div>
+              <div className="rounded-r-lg px-2 bg-neutral-700 flex items-center opacity-60 text-white text-xs font-extrabold">{data.bidderIds.length}</div>
+            </div>
+          )}
         </div>
         {data.isActive && (
           <>
@@ -125,23 +100,40 @@ const ItemCard:React.FC<ItemCardProps> = ({
                 Last Bid:
               </div>
               <div className="flex flex-row items-center">
-                {data.bids?.[data.bids.length - 1]?.user.username || 0} <MdOutlineHive className="ml-2" size={12}/>{data.bids?.[data.bids.length - 1]?.amount || 0}
+                <strong className="font-semibold">{data.bids?.[data.bids.length - 1]?.user.username || ""}</strong> <MdOutlineHive className="ml-2" size={12}/>{data.bids?.[data.bids.length - 1]?.amount || 0}
               </div>
             </div>
             <Button 
               label="Bid"
-              onClick={() => {}}
+              onClick={currentUser ? (() => router.push(`/items/${data.id}`)) : loginModal.onOpen}
               small
             />
           </>
         )}
-        <div className="font-light text-neutral-500">
-          <Timer 
-            isActive={data.isActive}
-            endDate={data.endDate}
-            startDate={data.startDate}
-          />
-        </div>
+        {data.winnerId ? (
+          <div className="flex flex-col gap-8">
+            <div className="text-sm">The auction has ended and the highest bid placed was <div className="inline-flex flex-row items-baseline text-base font-semibold"><MdOutlineHive className="ml-1" size={12}/>{data.bids?.[data.bids.length - 1].amount}</div>. Congratulations to the winning bidder!</div>
+          <div
+            className="
+              flex
+              flex-row
+              items-center
+              gap-2
+            "
+          >
+            <div>Winner <strong>{data.winner?.username}</strong></div>
+            <Avatar src={data.winner?.image}/>
+          </div>
+          </div>
+        ) : (
+          <div className="font-light text-neutral-500">
+            <Timer 
+              isActive={data.isActive}
+              endDate={data.endDate}
+              startDate={data.startDate}
+            />
+          </div>
+        )}
       </div>
     </div>
   );

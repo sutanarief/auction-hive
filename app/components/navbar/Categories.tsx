@@ -2,9 +2,9 @@
 
 import React, { MouseEvent, ReactEventHandler, useState } from 'react';
 import { IoTvSharp } from 'react-icons/io5'
-import { FaPaintBrush } from 'react-icons/fa'
+import { FaPaintBrush, FaFlagCheckered } from 'react-icons/fa'
 import { GiAmpleDress, GiCutDiamond } from 'react-icons/gi'
-import { BsCarFrontFill, BsHouseFill } from 'react-icons/bs'
+import { BsCarFrontFill, BsHouseFill, BsClockFill, BsFillCalendar2EventFill } from 'react-icons/bs'
 import { MdOutlineSmartToy, MdSportsFootball } from 'react-icons/md'
 import Container from '../Container';
 import CategoryBox from '../CategoryBox';
@@ -57,17 +57,25 @@ export const categories = [
   },
 ]
 
+const mainState = [
+  {
+  label: "Active",
+  icon: BsClockFill,
+  description: "This category includes the latest gadgets and electronics, including smartphones, laptops, smartwatches, and gaming consoles"
+  },
+  {
+  label: "Upcoming",
+  icon: BsFillCalendar2EventFill,
+  description: "This category includes the latest gadgets and electronics, including smartphones, laptops, smartwatches, and gaming consoles"
+  },
+  {
+  label: "Finished",
+  icon: FaFlagCheckered,
+  description: "This category includes the latest gadgets and electronics, including smartphones, laptops, smartwatches, and gaming consoles"
+  },
+]
+
 const Categories:React.FC<CategoriesProps> = () => {
-
-  const [hoverItem, setHoverItem] = useState("")
-
-  const handleMouseEnter = (e: MouseEvent<HTMLDivElement>, item: string) => {
-    setHoverItem(item)
-  }
-
-  const handleMouseLeave = (e: MouseEvent<HTMLDivElement>) => {
-    setHoverItem("")
-  }
 
   const params = useSearchParams()
   const category = params?.get('category')
@@ -79,7 +87,7 @@ const Categories:React.FC<CategoriesProps> = () => {
   }
   
   return (
-
+    <>
       <Container>
         <div
           className='
@@ -91,6 +99,15 @@ const Categories:React.FC<CategoriesProps> = () => {
             overflow-x-auto
           '
         >
+          {mainState.map((item) => (
+              <CategoryBox 
+              key={item.label}
+              label={item.label}
+              description={item.description}
+              selected={category === item.label}
+              icon={item.icon}
+            />
+          ))}
           {categories.map((item) => (
             <CategoryBox 
               key={item.label}
@@ -102,34 +119,7 @@ const Categories:React.FC<CategoriesProps> = () => {
           ))}
         </div>
       </Container>
-    // <div
-    //   className='
-    //     flex-wrap
-    //     flex
-    //     mt-4
-    //     font-semibold
-    //     justify-center
-    //     sm:flex-nowrap
-    //   '
-    // >
-    //   {categories.map((item, index) => (
-    //     <div 
-    //       key={index}
-    //       onMouseEnter={(e: MouseEvent<HTMLDivElement>) => handleMouseEnter(e, item)}
-    //       onMouseLeave={handleMouseLeave}
-    //       className={`
-    //         cursor-pointer
-    //         hover:border-b-[1px]
-    //         border-b-black
-    //         px-5
-    //         py-1
-    //         text-${hoverItem ? hoverItem === item.label ? "black" : "neutral-500" : "black"}
-    //       `}
-    //     >
-    //       {item}
-    //     </div>
-    //   ))}
-    // </div>
+    </>
   )
 }
 export default Categories;

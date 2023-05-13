@@ -14,7 +14,7 @@ const Search:React.FC<SearchProps> = () => {
         border-[1px]
         w-full
         sm:w-full
-        lg:w-7/12
+        lg:w-1/2
         py-2
         rounded-full
         shadow-sm

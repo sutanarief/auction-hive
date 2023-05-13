@@ -47,6 +47,7 @@ const ItemHead:React.FC<ItemHeadProps> = ({
     endDate,
     description,
     bids: itemBids,
+    winnerId
   } = item
 
   return (
@@ -63,11 +64,13 @@ const ItemHead:React.FC<ItemHeadProps> = ({
       />
     )}
     <div className="font-light text-neutral-500">
-      <Timer
-        isActive={isActive}
-        startDate={startDate}
-        endDate={endDate}
-      />
+      {!winnerId && (
+        <Timer
+          isActive={isActive}
+          startDate={startDate}
+          endDate={endDate}
+        />
+      )}
     </div>
     <div
       className="

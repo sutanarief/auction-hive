@@ -10,9 +10,10 @@ export default async function getItems() {
       include: {
         bids: {
           include: {
-            user: true
+            user: true,
           }
-        }
+        },
+        winner: true
       }
     })
 
@@ -31,7 +32,10 @@ export default async function getItems() {
           user: {
             username: bid.user.username
           }
-        }))
+        })),
+        winner: {
+          username: item.winner?.username
+        }
       }
     })
   } catch (error: any) {

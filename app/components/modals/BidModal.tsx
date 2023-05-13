@@ -100,8 +100,16 @@ const BidModal:React.FC<BidModalProps> = ({ currentUser }) => {
       return setIsLoading(false)
     }
 
+    if(bidModalHook.lastUserBid === currentUser?.username) {
+      toast.error('You are now the highest bidder! Your bid has been recorded. Please wait until another user places a bid before bidding again. Thank you!', {
+        position: 'bottom-center'
+      })
+      return setIsLoading(false)
+    }
+
     axios.post(`/api/bids/${bidModalHook.itemId}`, data)
-      .then(() => {
+      .then((res) => {
+        console.log(res, 'ini res')
         toast.success('Bid placed')
         router.refresh()
         reset()
@@ -114,7 +122,7 @@ const BidModal:React.FC<BidModalProps> = ({ currentUser }) => {
   } 
 
   const bodyContent = (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-4">
       <Heading
         title="Place your bid"
         subtitle={`Enter your bid to join the auction for ${bidModalHook.itemName}`}
@@ -133,32 +141,35 @@ const BidModal:React.FC<BidModalProps> = ({ currentUser }) => {
           Buyout Price:<MdOutlineHive size={10} className="mr-1 ml-2"/> {bidModalHook.buyoutPrice}
         </span>
       </div>
-      <div className="flex flex-row gap-4">
-        <Button
-          label="1x"
-          onClick={() => setCustomValue('amount', calculateBid(1, bidModalHook.lastBid, bidModalHook.startPrice))}
-          small
-        />
-        <Button
-          label="2x"
-          onClick={() => setCustomValue('amount', calculateBid(2, bidModalHook.lastBid, bidModalHook.startPrice))}
-          small
-        />
-        <Button
-          label="3x"
-          onClick={() => setCustomValue('amount', calculateBid(3, bidModalHook.lastBid, bidModalHook.startPrice))}
-          small
-        />
-        <Button
-          label="4x"
-          onClick={() => setCustomValue('amount', calculateBid(4, bidModalHook.lastBid, bidModalHook.startPrice))}
-          small
-        />
-        <Button
-          label="5x"
-          onClick={() => setCustomValue('amount', calculateBid(5, bidModalHook.lastBid, bidModalHook.startPrice))}
-          small
-        />
+      <div className="flex flex-col gap-2">
+        <div>Increment Multiplier</div>
+        <div className="flex flex-row gap-4">
+          <Button
+            label="1x"
+            onClick={() => setCustomValue('amount', calculateBid(1, bidModalHook.lastBid, bidModalHook.startPrice))}
+            small
+          />
+          <Button
+            label="2x"
+            onClick={() => setCustomValue('amount', calculateBid(2, bidModalHook.lastBid, bidModalHook.startPrice))}
+            small
+          />
+          <Button
+            label="3x"
+            onClick={() => setCustomValue('amount', calculateBid(3, bidModalHook.lastBid, bidModalHook.startPrice))}
+            small
+          />
+          <Button
+            label="4x"
+            onClick={() => setCustomValue('amount', calculateBid(4, bidModalHook.lastBid, bidModalHook.startPrice))}
+            small
+          />
+          <Button
+            label="5x"
+            onClick={() => setCustomValue('amount', calculateBid(5, bidModalHook.lastBid, bidModalHook.startPrice))}
+            small
+          />
+        </div>
       </div>
       <div>
         <Input

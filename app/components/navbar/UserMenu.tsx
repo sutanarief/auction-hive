@@ -32,6 +32,11 @@ const UserMenu:React.FC<UserMenuProps> = ({ currentUser }) => {
   return (
     <div className={`relative ${currentUser ? "" : "w-[10vw]"}`}>
       <div className='flex flex-row items-center gap-3'>
+        <div
+          onClick={() => router.push('/')}
+        >
+          Home
+        </div>
         {currentUser ? (
           <div
             onClick={() => router.push('/balance')}
@@ -49,7 +54,7 @@ const UserMenu:React.FC<UserMenuProps> = ({ currentUser }) => {
           >
             <div className='flex flex-row items-start'>
               <MdOutlineHive size={18}/>
-              <span className='text-center self-center'>{currentUser.balance || 0}</span>
+              <span className='text-center self-center'>{currentUser.balance || 99999999}</span>
             </div>
           </div>
         ) : (
@@ -115,8 +120,8 @@ const UserMenu:React.FC<UserMenuProps> = ({ currentUser }) => {
                 {/* <MenuItem onClick={() => router.push('/profile')} label='Profile'/> */}
                 <MenuItem onClick={() => router.push('/balance')} label='Balance'/>
                 <MenuItem onClick={() => router.push('/items/myitems')} label='My Items'/>
+                <MenuItem onClick={() => router.push('/watched')} label='Watched Items'/>
                 <MenuItem onClick={() => router.push('/auctions')} label='Joined Auction'/>
-                {/* <MenuItem onClick={() => router.push('/cart')} label='Cart'/> */}
                 <hr/>
                 <MenuItem onClick={() => signOut()} label='Logout'/>
               </>

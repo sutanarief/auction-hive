@@ -10,6 +10,8 @@ import ItemModal from './components/modals/ItemModal'
 import ClientOnly from './components/ClientOnly'
 import BidInfoModal from './components/modals/BidInfoModal'
 import BidModal from './components/modals/BidModal'
+import BuyoutModal from './components/modals/BuyoutModal'
+import BalanceModal from './components/modals/BalanceModal'
 
 
 const font = Nunito({
@@ -38,6 +40,8 @@ export default async function RootLayout({
           <RegisterModal />
           <BidInfoModal />
           <BidModal currentUser={currentUser} />
+          <BuyoutModal />
+          <BalanceModal />
           <ItemModal currentUser={currentUser} />
           <Navbar currentUser={currentUser} />
           <div className='pb-20 pt-28'>

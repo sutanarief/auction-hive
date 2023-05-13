@@ -11,6 +11,7 @@ import Button from "../Button";
 import useBidInfoModal from "@/app/hooks/useBidInfoModal";
 import useBidModal from "@/app/hooks/useBidModal";
 import BidCard from "../bids/BidCard";
+import useBuyoutModal from "@/app/hooks/useBuyoutModal";
 
 type ItemInfoProps = {
   item: SafeItem & {
@@ -39,6 +40,7 @@ const ItemInfo:React.FC<ItemInfoProps> = ({
 }) => {
   const infoModal = useBidInfoModal()
   const bidModal = useBidModal()
+  const buyoutModal = useBuyoutModal()
 
   return (
     <div className="col-span-7 flex flex-col gap-4" >
@@ -102,7 +104,7 @@ const ItemInfo:React.FC<ItemInfoProps> = ({
             <div className="flex flex-row items-center">Start Price: <MdOutlineHive className="ml-2" size={12}/>{item.initialPrice}</div>
             <div className="flex flex-row items-center">Minimum Bid: <MdOutlineHive className="ml-2" size={12}/>{item.initialPrice}</div>
             <div className="flex flex-row items-center">Buyout Price: <MdOutlineHive className="ml-2" size={12}/>{item.buyoutPrice}</div>
-            <div className="flex flex-row items-center">{item.winnerId ? "Sold for:" : "Last Bid:"} <MdOutlineHive className="ml-2" size={12}/>{item.bidId || item.bids?.[item.bids.length - 1]?.amount || 0}</div>
+            <div className="flex flex-row items-center">{item.winnerId ? "Sold for:" : "Last Bid:"} <MdOutlineHive className="ml-2" size={12}/>{item.bids?.[item.bids.length - 1]?.amount || 0}</div>
           </div>
           <div className="sm:border-l-[1px] border-l-neutral-600 flex flex-col w-full sm:w-3/5">
             <div className="text-xl sm:ml-2"><strong>Bid History</strong></div>
@@ -144,12 +146,12 @@ const ItemInfo:React.FC<ItemInfoProps> = ({
           <div className="flex flex-row gap-4">
             <Button
               label="Bid"
-              onClick={() => bidModal.onOpen(item.title, item.bids?.[item.bids.length - 1]?.amount || 0, item.id, item.initialPrice, item.buyoutPrice)}
+              onClick={() => bidModal.onOpen(item.title, item.bids?.[item.bids.length - 1]?.amount || 0, item.id, item.initialPrice, item.buyoutPrice, item.bids?.[item.bids.length - 1]?.user.username || "")}
             />
             <Button
               label="Buyout"
               outline
-              onClick={() => {}}
+              onClick={() => buyoutModal.onOpen(item.title, item.buyoutPrice, item.id)}
             />
           </div>
         </div>

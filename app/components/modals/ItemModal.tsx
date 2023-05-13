@@ -202,7 +202,7 @@ const ItemModal:React.FC<ItemModalProps> = ({
           subtitle="Set the initial price and the buyout price too"
         />
         <div className="text-neutral-400 flex flex-row items-center">
-          1 <MdOutlineHive size={18} /> = 10$
+          1 <MdOutlineHive size={18} /> = 1$
         </div>
         <Input 
           id="initialPrice"
