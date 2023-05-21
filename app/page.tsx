@@ -5,7 +5,10 @@ import getCurrentUser from "./actions/getCurrentUser";
 import getItems from "./actions/getItems";
 import ItemCard from "./components/items/ItemCard";
 import ClientOnly from "./components/ClientOnly";
+import { TiPlus } from "react-icons/ti"
 import moment from "moment"
+import Button from "./components/Button";
+import RegisterItemCard from "./components/RegisterItemCard";
 
 export default async function Home(props: any) {
   const isHasParams = props.searchParams.category
@@ -45,9 +48,10 @@ export default async function Home(props: any) {
       <ClientOnly>
         <EmptyState
           showReset
-          {...(!isHasParams  && { title:  "Be the first to sell, register your item now !"})}
-          {...(!isHasParams  && { subtitle:  "We're sorry, but we don't have any items right now. Register your item or come back at a later time"})}
+          {...(!isHasParams && { title:  "Be the first to sell, register your item now !"})}
+          {...(!isHasParams && { subtitle:  "We're sorry, but we don't have any items right now. Register your item or come back at a later time"})}
           currentUser={currentUser}
+          category={isHasParams}
         />
       </ClientOnly>
     )
@@ -57,7 +61,7 @@ export default async function Home(props: any) {
     <Container>
       <div
         className="
-          pt-24
+          pt-20
           grid
           grid-cols-1
           sm:grid-cols-2
@@ -68,6 +72,9 @@ export default async function Home(props: any) {
           gap-8
         "
       >
+        {currentUser && (
+          <RegisterItemCard />
+        )}
         {isHasParams ? (
           itemsByCategory.map((item: any) => {
             return (

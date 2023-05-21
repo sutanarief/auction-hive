@@ -5,15 +5,29 @@ import Container from '../Container';
 import Logo from './Logo';
 import Search from './Search';
 import UserMenu from './UserMenu';
-import { SafeUser } from '@/app/types';
+import { SafeBid, SafeUser } from '@/app/types';
 import Categories from './Categories';
+import { useRouter } from 'next/navigation';
 
 type NavbarProps = {
-  currentUser?: SafeUser | null;
+  currentUser?: SafeUser & {
+    bids: (SafeBid & {
+      action: string
+      createdAt: string
+      item: {
+        isEnded: boolean
+        id: string
+        title: string
+      },
+      user: {
+        username: string | null
+      }
+    })[]
+  } | null;
 };
 
 const Navbar:React.FC<NavbarProps> = ({ currentUser }) => {
-  
+  const router = useRouter()
   return (
     <div className='fixed w-full bg-gray-50 z-10 shadow-sm'>
       <div
@@ -32,6 +46,18 @@ const Navbar:React.FC<NavbarProps> = ({ currentUser }) => {
           >
             <Logo />
             <Search />
+            <div
+              onClick={() => router.push('/')}
+              className='
+                cursor-pointer
+                font-semibold
+                hover:border-b-[2px]
+                pb-1
+                
+              '
+            >
+              Home
+            </div>
             <UserMenu currentUser={currentUser} />
           </div>
         </Container>

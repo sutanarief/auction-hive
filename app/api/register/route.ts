@@ -21,7 +21,8 @@ export async function POST(
       email,
       name,
       hashedPassword,
-      username
+      username,
+      balance: 0
     }
   })
 

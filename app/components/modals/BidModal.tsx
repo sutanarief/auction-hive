@@ -49,10 +49,10 @@ const BidModal:React.FC<BidModalProps> = ({ currentUser }) => {
 
   const calculateBid = (multiplier: number, lastBid: number, startPrice: number) => {
     if(lastBid === 0) {
-       return startPrice + (multiplier * incrementValue(startPrice))
+       return startPrice + (multiplier * incrementValue(lastBid))
     }
 
-    let result = lastBid + (multiplier * incrementValue(startPrice))
+    let result = lastBid + (multiplier * incrementValue(lastBid))
 
     if(result >= bidModalHook.buyoutPrice) {
       return bidModalHook.buyoutPrice
@@ -93,6 +93,7 @@ const BidModal:React.FC<BidModalProps> = ({ currentUser }) => {
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     setIsLoading(true)
+    
     if(data.amount >= bidModalHook.buyoutPrice) {
       toast.error('Sorry, your bid has exceeded the buyout price. Please select the "Buyout" option beside the bid button if you wish to purchase the item.', {
         position: 'bottom-center'
@@ -107,9 +108,15 @@ const BidModal:React.FC<BidModalProps> = ({ currentUser }) => {
       return setIsLoading(false)
     }
 
+    if(data.amount > (currentUser?.balance || 0)) {
+      toast.error('You do not have sufficient funds in your account to proceed with the bid.', {
+        position: 'bottom-center'
+      })
+      return setIsLoading(false)
+    }
+
     axios.post(`/api/bids/${bidModalHook.itemId}`, data)
       .then((res) => {
-        console.log(res, 'ini res')
         toast.success('Bid placed')
         router.refresh()
         reset()
@@ -132,10 +139,10 @@ const BidModal:React.FC<BidModalProps> = ({ currentUser }) => {
           Current last bid:<MdOutlineHive size={10} className="mr-1 ml-2"/> {bidModalHook.lastBid}
         </span>
         <span className="flex flex-row items-center">
-          Minimum bid:<MdOutlineHive size={10} className="mr-1 ml-2"/> {bidModalHook.startPrice}
+          Minimum bid:<MdOutlineHive size={10} className="mr-1 ml-2"/> {(bidModalHook.lastBid || bidModalHook.startPrice) + incrementValue(bidModalHook.lastBid)}
         </span>
         <span className="flex flex-row items-center">
-          Increment:<MdOutlineHive size={10} className="mr-1 ml-2"/> {incrementValue(bidModalHook.startPrice)}
+          Increment:<MdOutlineHive size={10} className="mr-1 ml-2"/> {incrementValue(bidModalHook.lastBid)}
         </span>
         <span className="flex flex-row items-center">
           Buyout Price:<MdOutlineHive size={10} className="mr-1 ml-2"/> {bidModalHook.buyoutPrice}

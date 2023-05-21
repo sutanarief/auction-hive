@@ -23,6 +23,14 @@ export async function POST(
     initialPrice
   } = body
 
+  // for(let key in body) {
+  //   if(key !== "isActive") {
+  //     if(!body[key]) {
+  //       throw new Error("Please fill up all the required data")
+  //     }
+  //   }
+  // }
+
   const items = await prisma.item.create({
     data: {
       title,
@@ -31,6 +39,7 @@ export async function POST(
       endDate,
       isActive,
       imageSrc,
+      isEnded: false,
       category,
       buyoutPrice: parseInt(buyoutPrice, 10),
       initialPrice: parseInt(initialPrice, 10),

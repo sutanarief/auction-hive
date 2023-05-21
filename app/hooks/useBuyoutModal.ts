@@ -20,7 +20,12 @@ const useBuyoutModal = create<BuyoutModal>((set) => ({
     set({ buyoutPrice })
     set({ itemId })
   },
-  onClose: () => set({ isOpen: false })
+  onClose: () => {
+    set({ isOpen: false })
+    set({ itemName: "" })
+    set({ buyoutPrice: 0 })
+    set({ itemId: "" })
+  }
 }))
 
 export default useBuyoutModal;

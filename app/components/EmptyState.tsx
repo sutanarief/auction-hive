@@ -14,10 +14,15 @@ type EmptyStateProps = {
   showReset?: boolean;
   label?: string;
   currentUser?: SafeUser | null;
+  category?: string;
 };
 
+
+const mainCategory = ["Active", "Upcoming", "Finished"]
+
 const EmptyState:React.FC<EmptyStateProps> = ({
-  title = "Be the first to sell in this category, register your item now!",
+  category,
+  title = `${mainCategory.includes(category || "") ? `There is no ${category} auction exist` : "Be the first to sell in this category, register your item now!"}`,
   subtitle = "We're sorry, but we don't have any items in this category right now. Please select another category or come back at a later time.",
   label="Register Your Item Now",
   showReset,
@@ -32,8 +37,13 @@ const EmptyState:React.FC<EmptyStateProps> = ({
       return itemModal.onOpen()
     }
 
+    if(label.includes('Home')) {
+      return router.push('/')
+    }
+
+
     return loginModal.onOpen()
-  }, [currentUser, loginModal, itemModal])
+  }, [currentUser, loginModal, itemModal, label, router])
   
   return (
     <div

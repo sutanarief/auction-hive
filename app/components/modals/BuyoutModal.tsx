@@ -6,10 +6,12 @@ import { MdOutlineHive } from "react-icons/md";
 import { useState } from "react";
 import axios from "axios";
 import { toast } from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
 const BuyoutModal = () => {
   const buyoutModal = useBuyoutModal()
   const [isLoading, setIsLoading] = useState(false)
+  const router = useRouter()
 
   const bodyContent = (
     <div>
@@ -20,9 +22,12 @@ const BuyoutModal = () => {
   const onSubmit = () => {
     setIsLoading(true)
 
-    axios.put(`/api/items/${buyoutModal.itemId}`)
+    axios.post(`/api/items/${buyoutModal.itemId}`)
       .then(() => {
+        toast.success('Bid placed')
+        router.refresh()
         buyoutModal.onClose()
+        
       })
       .catch(() => {
         toast.error("Something went wrong!")

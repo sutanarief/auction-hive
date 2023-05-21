@@ -2,39 +2,31 @@ import getCurrentUser from "@/app/actions/getCurrentUser";
 import getItemById from "@/app/actions/getItemById";
 import ClientOnly from "@/app/components/ClientOnly";
 import EmptyState from "@/app/components/EmptyState";
-import ItemClient from "./ItemClient";
+import BalanceClient from "./BalanceClient";
 import getBidsById from "@/app/actions/getBids";
+import getHistory from "@/app/actions/getHistory";
 
 type IParams = {
-  itemId: string
+  userId: string
 }
 
-const ItemRoom = async ({
+const Balance = async ({
   params
 }: { params: IParams}) => {
 
-  const item = await getItemById(params)
   const currentUser = await getCurrentUser()
   const bids = await getBidsById(params)
-
-  if (!item) {
-    return (
-      <ClientOnly>
-        <EmptyState />
-      </ClientOnly>
-    )
-  }
-
+  const history = await getHistory(params)
 
   return (
     <ClientOnly>
-      <ItemClient 
-        item={item}
+      <BalanceClient
         currentUser={currentUser}
         bids={bids}
+        history={history}
       />
     </ClientOnly>
   );
 }
- 
-export default ItemRoom;
+
+export default Balance;

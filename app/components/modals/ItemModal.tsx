@@ -2,28 +2,30 @@
 
 import useItemModal from "@/app/hooks/useItemModal";
 import Modal from "./Modal";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Heading from "../Heading";
 import { categories } from "../navbar/Categories";
 import CategoryInput from "../inputs/CategoryInput";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
+import { IoInformationCircleOutline } from "react-icons/io5"
 import { MdOutlineHive } from 'react-icons/md'
 import ImageUpload from "../inputs/ImageUpload";
 import Input from "../inputs/Input";
 import Calendar from "../inputs/Calendar";
 import { SafeUser } from "@/app/types";
 import { Range } from "react-date-range";
-import { addDays } from "date-fns";
+import { addDays, setDate } from "date-fns";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
 enum STEPS {
-  CATEGORY = 0,
-  IMAGES = 1,
-  DESCRIPTION = 2,
-  TIME = 3,
-  PRICE = 4,
+  INFORMATION = 0,
+  CATEGORY = 1,
+  IMAGES = 2,
+  DESCRIPTION = 3,
+  TIME = 4,
+  PRICE = 5,
 }
 
 const initialDateRange = {
@@ -42,7 +44,7 @@ const ItemModal:React.FC<ItemModalProps> = ({
   const itemModal = useItemModal()
   const [dateRange, setDateRange] = useState<Range>(initialDateRange)
 
-  const [step, setStep] = useState(STEPS.CATEGORY)
+  const [step, setStep] = useState(STEPS.INFORMATION)
   const [isLoading, setIsLoading] = useState(false)
 
   const {
@@ -53,7 +55,7 @@ const ItemModal:React.FC<ItemModalProps> = ({
     formState: {
       errors,
     },
-    reset
+    reset,
   } = useForm<FieldValues>({
     defaultValues: {
       title: '',
@@ -72,8 +74,6 @@ const ItemModal:React.FC<ItemModalProps> = ({
 
   const category = watch('category')
   const imageSrc = watch('imageSrc')
-  const startDate = watch('startDate')
-  const endDate = watch('endDate')
 
   const setCustomValue = (id: string, value: any) => {
     setValue(id, value, {
@@ -92,21 +92,59 @@ const ItemModal:React.FC<ItemModalProps> = ({
   }
 
   const actionLabel = useMemo(() => {
-    if(step === STEPS.PRICE) return 'List'
+    if(step === STEPS.PRICE) {
+      if(itemModal.action) {
+        return 'Update'
+      }
+      return 'List'
+    }
+      
     return 'Next'
-  }, [step])
+  }, [step, itemModal.action])
 
   const secondaryActionLabel = useMemo(() => {
-    if(step === STEPS.CATEGORY) return undefined
+    if(step === STEPS.INFORMATION) return undefined
     return 'Back'
   }, [step])
 
   let bodyContent = (
     <div className="flex flex-col gap-8">
       <Heading 
-        title="Which of these best describes your item?"
-        subtitle="Pick a category"
+        title="Information: Editing and Deleting Items"
+        subtitle="Maintaining Fairness and Integrity in the Auction Process"
       />
+      <div className="flex flex-row w-11/12 self-center justify-center rounded-md bg-blue-400 p-2 gap-2">
+        <div className="bg-blue-400 flex items-center border-r-[2px] border-r-white pr-1">
+          <IoInformationCircleOutline size={45} color="white" className="font-extrabold place-self-center"/>
+        </div>
+        <div className="flex flex-col pl-1">
+          <div className="text-lg text-white font-bold">Information</div>
+          <div className="text-white font-bold max-w-fit">
+            Please note that once your item auction has started, you will no longer be able to <strong className="font-extrabold">edit</strong> or <strong className="font-extrabold">delete</strong> your item.
+          </div>
+        </div>
+      </div>
+      <div>
+        <div>
+          This is to ensure fairness for all bidders and maintain the integrity of the auction process. We recommend carefully reviewing your item details before submitting them for auction.
+        </div>
+      </div>
+      <div>
+        <div>Thank you for your understanding.</div>
+        <div className="mt-1">Regards,</div>
+        <div className="font-semibold">AuctionHive Team</div>
+      </div>
+    </div>
+  )
+  // Please note that once an auction has started, you will no longer be able to edit or delete your item. This is to ensure fairness for all bidders and maintain the integrity of the auction process. We recommend carefully reviewing your item details before submitting them for auction. Thank you for your understanding.
+
+  if (step === STEPS.CATEGORY) {
+    bodyContent = (
+      <div className="flex flex-col gap-8">
+        <Heading 
+          title="Which of these best describes your item?"
+          subtitle="Pick a category"
+        />
       <div
         className="
           grid
@@ -132,8 +170,8 @@ const ItemModal:React.FC<ItemModalProps> = ({
         ))}
       </div>
     </div>
-  )
-
+    )
+  }
   if (step === STEPS.IMAGES) {
     bodyContent = (
       <div className="flex flex-col gap-8">
@@ -212,6 +250,7 @@ const ItemModal:React.FC<ItemModalProps> = ({
           disabled={isLoading}
           register={register}
           errors={errors}
+          required
           watch={watch}
         />
         <hr />
@@ -222,6 +261,7 @@ const ItemModal:React.FC<ItemModalProps> = ({
           type="number"
           disabled={isLoading}
           register={register}
+          required
           errors={errors}
           watch={watch}
         />
@@ -237,19 +277,57 @@ const ItemModal:React.FC<ItemModalProps> = ({
 
     setIsLoading(true)
 
-    axios.post('/api/items', data)
-      .then(() => {
-        toast.success('Item Registerd')
-        router.refresh()
-        reset()
-        setStep(STEPS.CATEGORY)
-        itemModal.onClose()
+    for(let key in data) {
+      if(key !== "isActive") {
+        if(!data[key]) {
+          return toast.error("Please fill up all the required data")
+        }
+      }
+    }
+
+    if(itemModal.action) {
+      axios.put(`/api/items/${itemModal.item.id}`, data)
+        .then(() => {
+          toast.success('Item Edited')
+          router.refresh()
+          reset()
+          setStep(STEPS.CATEGORY)
+          itemModal.onClose()
+        })
+        .catch((error: any) => {
+          toast.error("Something went wrong")
+        })
+        .finally(() => setIsLoading(false))
+    } else {
+      axios.post('/api/items', data)
+        .then(() => {
+          toast.success('Item Registerd')
+          router.refresh()
+          reset()
+          setStep(STEPS.CATEGORY)
+          itemModal.onClose()
+        })
+        .catch((error: any) => {
+          toast.error("Something went wrong")
+        })
+        .finally(() => setIsLoading(false))
+    }
+
+  }
+
+  useEffect(() => {
+    if(itemModal.action) {
+      const defaultValue = watch()
+      Object.keys(defaultValue).forEach((key) => {
+        if(key.includes("Date")) {
+          console.log(key, 'masuk', new Date(itemModal.item[key]))
+          setDateRange({startDate: new Date(itemModal.item["startDate"]), key: "selection", endDate: new Date(itemModal.item["endDate"])})
+        } else {
+          setValue(key, itemModal.item[key])
+        }
       })
-      .catch(() => {
-        toast.error('Something went wrong')
-      })
-      .finally(() => setIsLoading(false))
-  } 
+    }
+  }, [itemModal.action, itemModal.item, setValue, watch])
 
   return (
     <Modal 
@@ -259,7 +337,7 @@ const ItemModal:React.FC<ItemModalProps> = ({
       onSubmit={handleSubmit(onSubmit)}
       actionLabel={actionLabel}
       secondaryActionLabel={secondaryActionLabel}
-      secondaryAction={step === STEPS.CATEGORY ? undefined : onBack}
+      secondaryAction={step === STEPS.INFORMATION ? undefined : onBack}
       body={bodyContent}
     />
   )

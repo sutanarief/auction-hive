@@ -19,7 +19,8 @@ export async function POST(
 
   const body = await request.json()
   const {
-    amount
+    amount,
+    action
   } = body
 
   const { itemId } = params
@@ -28,11 +29,45 @@ export async function POST(
     throw new Error('Invalid ID')
   }
 
+  const updateBidHistory = await prisma.history.updateMany({
+    where: {
+      AND: [
+        {
+          userId: currentUser.id
+        },
+        {
+          itemId
+        },
+        {
+          action: {
+            equals: "Bid"
+          }
+        }
+      ]
+    },
+    data: {
+      isActive: false
+    }
+  })
+  
   const bids = await prisma.bid.create({
     data: {
       amount: parseInt(amount, 10),
       itemId,
       userId: currentUser.id,
+      isActive: true,
+      action: "Bid"
+    }
+  })
+
+
+  const history = await prisma.history.create({
+    data: {
+      amount: parseInt(amount, 10),
+      itemId,
+      userId: currentUser.id,
+      isActive: true,
+      action: "Bid"
     }
   })
 
@@ -40,8 +75,8 @@ export async function POST(
   let biddedIds = [ ...(currentUser.biddedIds || [])]
   let bidderIds = [...(itemById?.bidderIds || [])]
 
-  let isBidded = biddedIds.findIndex((x) => itemId)
-  let isBidder = bidderIds.findIndex((x) => currentUser.id)
+  let isBidded = biddedIds.findIndex((x) => itemId === x)
+  let isBidder = bidderIds.findIndex((x) => currentUser.id === x)
   let user
   let item
 

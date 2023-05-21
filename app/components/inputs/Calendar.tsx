@@ -30,6 +30,8 @@ const Calendar:React.FC<CalendarProps> = ({
     }
   }
 
+  console.log(value, 'ini value')
+
   return (
     <div
       className="

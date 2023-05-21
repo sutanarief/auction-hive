@@ -17,7 +17,8 @@ export default async function getItemById(params: IParams) {
         winner: true,
         bids: {
           include: {
-            user: true
+            user: true,
+            item: true
           }
         }
       }
@@ -47,6 +48,11 @@ export default async function getItemById(params: IParams) {
         createdAt: bid.createdAt.toISOString(),
         user: {
           username: bid.user.username
+        },
+        item: {
+          id: bid.item.id,
+          title: bid.item.title,
+          isEnded: bid.item.isEnded
         }
       }))
     }

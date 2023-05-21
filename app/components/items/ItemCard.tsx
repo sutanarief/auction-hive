@@ -13,6 +13,7 @@ import { FaFlagCheckered } from "react-icons/fa";
 import Timer from "../Timer";
 import useLoginModal from "@/app/hooks/useLoginModal";
 import Avatar from "../Avatar";
+import { useCallback } from "react";
 
 
 type ItemCardProps = {
@@ -39,13 +40,20 @@ const ItemCard:React.FC<ItemCardProps> = ({
   const router = useRouter()
   const loginModal = useLoginModal()
 
+  const handleBidNow = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation()
+
+    if(currentUser) {
+      return () => router.push(`/items/${data.id}`)
+    }
+
+    return loginModal.onOpen
+  }
+
   return (
     <div
-      onClick={() => router.push(`/items/${data.id}`)}
       className="
         col-span-1
-        cursor-pointer
-        group
       "
     >
       <div className="flex flex-col gap-2 w-full">
@@ -60,14 +68,16 @@ const ItemCard:React.FC<ItemCardProps> = ({
         >
           <Image 
             fill
+            onClick={() => router.push(`/items/${data.id}`)}
             alt='Auction Item'
             src={data.imageSrc}
             className="
               object-cover
               h-full
               w-full
-              group-hover:scale-110
+              hover:scale-110
               transition
+              cursor-pointer
             "
           />
           <div className="absolute top-3 right-3">
@@ -84,6 +94,9 @@ const ItemCard:React.FC<ItemCardProps> = ({
               <div className="rounded-r-lg px-2 bg-neutral-700 flex items-center opacity-60 text-white text-xs font-extrabold">{data.bidderIds.length}</div>
             </div>
           )}
+        </div>
+        <div onClick={() => router.push(`/items/${data.id}`)} className="cursor-pointer font-semibold text-lg flex-row flex items-center">
+          {data.title}
         </div>
         {data.isActive && (
           <>

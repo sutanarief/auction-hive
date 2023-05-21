@@ -41,7 +41,7 @@ export default async function RootLayout({
           <BidInfoModal />
           <BidModal currentUser={currentUser} />
           <BuyoutModal />
-          <BalanceModal />
+          <BalanceModal currentUser={currentUser}/>
           <ItemModal currentUser={currentUser} />
           <Navbar currentUser={currentUser} />
           <div className='pb-20 pt-28'>

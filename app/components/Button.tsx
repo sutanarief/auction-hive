@@ -5,6 +5,7 @@ import { IconType } from 'react-icons';
 
 type ButtonProps = {
   label: string;
+  htmlLabel?: React.ReactElement
   onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
   disabled?: boolean;
   outline?: boolean;
@@ -18,9 +19,10 @@ const Button:React.FC<ButtonProps> = ({
   disabled,
   outline,
   small,
-  icon: Icon
+  icon: Icon,
+  htmlLabel
 }) => {
-  
+  console.log(onClick, 'ini onClick')
   return (
     <button
       onClick={onClick}
@@ -34,11 +36,11 @@ const Button:React.FC<ButtonProps> = ({
         transition
         w-full
         text-gray-800
+        font-semibold
         ${outline ? 'bg-white' : 'bg-yellow-400'}
         ${outline ? 'border-black' : 'border-yellow-400'}
         ${small ? 'py-1' : 'py-3'}
         ${small ? 'text-sm' : 'text-md'}
-        ${small ? 'font-light' : 'font-semibold'}
         ${small ? 'border-[1px]' : 'border-2'}
       `}
     >
@@ -52,7 +54,7 @@ const Button:React.FC<ButtonProps> = ({
           '
         />
       )}
-      {label}
+      {htmlLabel ? htmlLabel : label}
     </button>
   )
 }

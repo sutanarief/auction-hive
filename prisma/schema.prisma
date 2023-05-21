@@ -31,6 +31,7 @@ model User {
 
   bids     Bid[]
   accounts Account[]
+  history  History[]
 }
 
 model Account {
@@ -52,11 +53,25 @@ model Account {
   @@unique([provider, providerAccountId])
 }
 
+model History {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  amount    Int
+  itemId    String?  @db.ObjectId
+  action    String
+  isActive  Boolean
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  item      Item?    @relation(fields: [itemId], references: [id], onDelete: Cascade)
+}
+
 model Bid {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   userId    String   @db.ObjectId
   itemId    String   @db.ObjectId
   createdAt DateTime @default(now())
+  action    String
+  isActive  Boolean
   amount    Int
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   item      Item     @relation(fields: [itemId], references: [id])
@@ -73,6 +88,7 @@ model Item {
   imageSrc     String
   buyoutPrice  Int
   initialPrice Int
+  isEnded      Boolean
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
   userId       String   @db.ObjectId
@@ -80,10 +96,11 @@ model Item {
   bidId        String?  @db.ObjectId
   userIds      String[] @db.ObjectId
   bidderIds    String[] @db.ObjectId
-  owner        User     @relation("UserItems", fields: [userId], references: [id])
+  owner        User     @relation("UserItems", fields: [userId], references: [id], onDelete: Cascade)
   watchBy      User[]   @relation("WatchedItems", fields: [userIds], references: [id])
   bidders      User[]   @relation("BidderId", fields: [bidderIds], references: [id])
   winner       User?    @relation("WinItem", fields: [winnerId], references: [id])
 
-  bids Bid[]
+  bids    Bid[]
+  History History[]
 }

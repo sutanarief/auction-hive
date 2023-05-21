@@ -127,6 +127,7 @@ const ItemHead:React.FC<ItemHeadProps> = ({
           category={category}
           item={item}
           bids={bids}
+          currentUser={currentUser}
         />
       </div>
     </div>

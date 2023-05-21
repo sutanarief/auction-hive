@@ -29,7 +29,15 @@ const useBidModal = create<BidModal>((set) => ({
     set({ buyoutPrice })
     set({ lastUserBid })
   },
-  onClose: () => set({ isOpen: false }),
+  onClose: () => {
+    set({ isOpen: false })
+    set({ itemName: "" })
+    set({ lastBid: 0 })
+    set({ itemId: "" })
+    set({ startPrice: 0 })
+    set({ buyoutPrice: 0 })
+    set({ lastUserBid: "" })
+  },
 }))
 
 export default useBidModal;

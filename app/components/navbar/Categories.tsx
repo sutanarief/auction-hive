@@ -80,7 +80,7 @@ const Categories:React.FC<CategoriesProps> = () => {
   const params = useSearchParams()
   const category = params?.get('category')
   const pathname = usePathname()
-  const isMainPage = pathname === '/'
+  const isMainPage = pathname === '/' || pathname?.includes("myitems") || pathname?.includes("watched")
 
   if(!isMainPage) {
     return null
@@ -91,7 +91,7 @@ const Categories:React.FC<CategoriesProps> = () => {
       <Container>
         <div
           className='
-            pt-4
+            pt-2
             flex
             flex-row
             items-center

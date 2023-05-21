@@ -5,7 +5,7 @@ export default async function getItems() {
   try {
     const items = await prisma.item.findMany({
       orderBy: {
-        createdAt: 'desc'
+        endDate: 'desc'
       },
       include: {
         bids: {

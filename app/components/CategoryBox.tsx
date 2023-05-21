@@ -2,7 +2,7 @@
 
 import React, { useCallback } from 'react';
 import { IconType } from 'react-icons';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import qs from 'query-string'
 
 type CategoryBoxProps = {
@@ -21,6 +21,7 @@ const CategoryBox:React.FC<CategoryBoxProps> = ({
 
   const router = useRouter()
   const params = useSearchParams()
+  const pathname = usePathname()
 
   const handleClick = useCallback(() => {
     let currentQuery = {}
@@ -39,12 +40,12 @@ const CategoryBox:React.FC<CategoryBoxProps> = ({
     }
 
     const url = qs.stringifyUrl({
-      url: '/',
+      url: pathname?.includes('myitems') || pathname?.includes('watched') ? `${pathname}/` : '/',
       query: updatedQuery
     }, { skipNull: true })
 
     router.push(url)
-  }, [label, params, router])
+  }, [label, params, router, pathname])
   
   return (
     <div
@@ -55,7 +56,8 @@ const CategoryBox:React.FC<CategoryBoxProps> = ({
         items-center
         justify-center
         gap-2
-        p-3
+        px-3
+        py-2
         border-b-2
         hover:text-neutral-800
         transition

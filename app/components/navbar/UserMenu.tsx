@@ -9,12 +9,25 @@ import useRegisterModal from '@/app/hooks/useRegisterModal';
 import useLoginModal from '@/app/hooks/useLoginModal';
 import { signOut } from 'next-auth/react';
 import Button from '../Button';
-import { SafeUser } from '@/app/types';
+import { SafeBid, SafeHistory, SafeUser } from '@/app/types';
 import { useRouter } from 'next/navigation';
 import useIsClickOut from '@/app/hooks/useClickOutside';
 
 type UserMenuProps = {
-  currentUser?: SafeUser | null
+  currentUser?: SafeUser & {
+    bids: (SafeBid & {
+      action: string
+      createdAt: string
+      item: {
+        isEnded: boolean
+        id: string
+        title: string
+      },
+      user: {
+        username: string | null
+      }
+    })[]
+  } | null;
 };
 
 const UserMenu:React.FC<UserMenuProps> = ({ currentUser }) => {
@@ -24,6 +37,39 @@ const UserMenu:React.FC<UserMenuProps> = ({ currentUser }) => {
   const [isOpen, setIsOpen] = useState(false)
   const dropdownRef = useRef(null)
   const [elementCallback] = useIsClickOut(setIsOpen)
+  
+  const highestBids: SafeBid[] | undefined = currentUser?.bids?.reduce((acc: SafeBid[], bid: SafeBid) => {
+    const existingBid = acc.find((b: SafeBid) => b.itemId === bid.itemId);
+    if (!existingBid || bid.amount > existingBid.amount) {
+      acc = acc.filter((b: SafeBid) => b.itemId !== bid.itemId);
+      if(bid.isActive) {
+        acc.push(bid);
+      }
+    }
+    return acc; 
+  }, []);
+
+  const calculateUsed = (totalBid: SafeBid[]) => {
+    let total = totalBid.map((item) => {
+      if(item.action === 'Bid' && !item.item.isEnded) {
+        return item
+      }
+    }).reduce((acc, current) => acc + (current?.amount || 0), 0)
+
+    return total
+  }
+
+  const formatBalance = (balance: number) => {
+    const reversed = balance.toString().split('').reverse();
+    const chunks = [];
+  
+    while (reversed.length) {
+      chunks.push(reversed.splice(0, 3));
+    }
+  
+    const formatted = chunks.map(chunk => chunk.join('')).join(',');
+    return formatted.split('').reverse().join('');
+  }
 
   const toggleOpen = useCallback(() => {
     setIsOpen((value) => !value)
@@ -32,14 +78,9 @@ const UserMenu:React.FC<UserMenuProps> = ({ currentUser }) => {
   return (
     <div className={`relative ${currentUser ? "" : "w-[10vw]"}`}>
       <div className='flex flex-row items-center gap-3'>
-        <div
-          onClick={() => router.push('/')}
-        >
-          Home
-        </div>
         {currentUser ? (
           <div
-            onClick={() => router.push('/balance')}
+            onClick={() => router.push(`/balance/${currentUser.id}`)}
             className='
               block
               text-sm
@@ -54,7 +95,7 @@ const UserMenu:React.FC<UserMenuProps> = ({ currentUser }) => {
           >
             <div className='flex flex-row items-start'>
               <MdOutlineHive size={18}/>
-              <span className='text-center self-center'>{currentUser.balance || 99999999}</span>
+              <span className='text-center self-center'>{formatBalance((currentUser?.balance || 0) - calculateUsed(highestBids || []))}</span>
             </div>
           </div>
         ) : (
@@ -118,9 +159,9 @@ const UserMenu:React.FC<UserMenuProps> = ({ currentUser }) => {
             {currentUser ? (
               <>
                 {/* <MenuItem onClick={() => router.push('/profile')} label='Profile'/> */}
-                <MenuItem onClick={() => router.push('/balance')} label='Balance'/>
-                <MenuItem onClick={() => router.push('/items/myitems')} label='My Items'/>
-                <MenuItem onClick={() => router.push('/watched')} label='Watched Items'/>
+                <MenuItem onClick={() => router.push(`/balance/${currentUser.id}`)} label='Balance'/>
+                <MenuItem onClick={() => router.push(`/items/myitems/${currentUser.id}`)} label='My Items'/>
+                <MenuItem onClick={() => router.push('/items/watched')} label='Watched Items'/>
                 <MenuItem onClick={() => router.push('/auctions')} label='Joined Auction'/>
                 <hr/>
                 <MenuItem onClick={() => signOut()} label='Logout'/>
