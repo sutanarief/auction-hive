@@ -3,7 +3,7 @@ import { SafeItem } from "../types";
 
 type ItemModalStore = {
   isOpen: boolean;
-  onOpen: (data: SafeItem, action: string) => void;
+  onOpen: (data?: SafeItem, action?: string) => void;
   onClose: () => void;
   item: SafeItem
   action?: string | null
@@ -40,7 +40,7 @@ const useItemModal = create<ItemModalStore>((set) => ({
     bidId: "",
     bidderIds: [""]
   },
-  onOpen: (data: SafeItem, action: string) => {
+  onOpen: (data?: SafeItem, action?: string) => {
     set({ isOpen: true })
     set({ item: data })
     set({ action })
