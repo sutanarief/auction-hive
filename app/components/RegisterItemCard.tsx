@@ -25,7 +25,7 @@ const RegisterItemCard = () => {
       "
     >
       <div
-        onClick={itemModal.onOpen}
+        onClick={() => itemModal.onOpen()}
         className='
           p-2
           bg-yellow-400
@@ -58,7 +58,7 @@ const RegisterItemCard = () => {
     >
       <Button 
         label="Register an Item"
-        onClick={itemModal.onOpen}
+        onClick={() => itemModal.onOpen()}
         small
       />
     </div>
