@@ -1,3 +1,11 @@
+To do list :
+- Fix trigger function in mongodb Atlas (What should do if the auction end but there is no bid placed)
+- Try to implement queue when user placing a bid to make a clear interval between each bid/buyout
+
+
+
+
+
 hive logo
 
 hive by supalerk laipawat from <a href="https://thenounproject.com/browse/icons/term/hive/" target="_blank" title="hive Icons">Noun Project</a>
