@@ -49,7 +49,7 @@ npm install
 ```
 Run application :
 ```
-npm run start
+npm run dev
 ```
 
 # To Do
