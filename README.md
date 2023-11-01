@@ -7,7 +7,15 @@
 ![GitHub forks](https://img.shields.io/github/forks/sutanarief/auction-hive?style=social)
 
 Auction-Hive is an online auction platform revolutionizing buying and selling valuable items with a
-user-friendly interface, fair bidding process, and diverse categories..
+user-friendly interface, fair bidding process, and diverse categories.
+
+# Tech Stack
+[![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Next JS](https://img.shields.io/badge/Next-black?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
+[![TailwindCSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-%234ea94b.svg?style=for-the-badge&logo=mongodb&logoColor=white)](https://www.mongodb.com/)
+[![Prisma](https://img.shields.io/badge/Prisma-3982CE?style=for-the-badge&logo=Prisma&logoColor=white)](https://www.prisma.io/)
+[![Static Badge](https://img.shields.io/badge/Cloudinary-007ACC?style=for-the-badge&logo=""&logoColor=white)](https://cloudinary.com/)
 
 # Live Demo
 
@@ -48,6 +56,7 @@ npm run start
 
 * Make the search bar works
 * Try to implement queue for user bid's or buyouts
+* Fix trigger function in mongoDB Atlas, for change the item status (started/ended)
 
 # Secondary To do
 * Bidder rank
