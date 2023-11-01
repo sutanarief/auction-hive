@@ -56,7 +56,11 @@ npm run start
 
 * Make the search bar works
 * Try to implement queue for user bid's or buyouts
+<<<<<<< HEAD
 * Fix trigger function in mongoDB Atlas, for change the item status (started/ended)
+=======
+* Fix trigger function in mongoDB Atlas, for change the item status (active/unactive)
+>>>>>>> d1d416ac6fb7a1286f8614e76cf347a9ee557e07
 
 # Secondary To do
 * Bidder rank
